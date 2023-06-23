@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "524381137442",
+    "firebase_url": "https://baston-inteligente-3c2e7-default-rtdb.firebaseio.com",
+    "project_id": "baston-inteligente-3c2e7",
+    "storage_bucket": "baston-inteligente-3c2e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524381137442:android:3fc7c2cc5c4f9284baf87b",
+        "android_client_info": {
+          "package_name": "com.example.baston_inteligente"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "524381137442-9favjbv2lpcp1g4a6p6lein8qqp0uq5l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.baston_inteligente",
+            "certificate_hash": "b7f6a24cc184ec5a04011294fa45343839ee4af0"
+          }
+        },
+        {
+          "client_id": "524381137442-ef2drho9taftg01ag3rc4e1d3ro4ncdo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUQhkpQifx58riVqG9vU3UUrBieIKAAlA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "524381137442-ef2drho9taftg01ag3rc4e1d3ro4ncdo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "524381137442-ltu6olh3ge9a8jkco6igseu9hf3d55nv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bastonInteligenteMejorada"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524381137442:android:8cbbab0ec7423a83baf87b",
+        "android_client_info": {
+          "package_name": "com.example.baston_inteligente_mejorada"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "524381137442-ef2drho9taftg01ag3rc4e1d3ro4ncdo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUQhkpQifx58riVqG9vU3UUrBieIKAAlA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "524381137442-ef2drho9taftg01ag3rc4e1d3ro4ncdo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "524381137442-ltu6olh3ge9a8jkco6igseu9hf3d55nv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bastonInteligenteMejorada"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>524381137442-ltu6olh3ge9a8jkco6igseu9hf3d55nv.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.524381137442-ltu6olh3ge9a8jkco6igseu9hf3d55nv</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>524381137442-9favjbv2lpcp1g4a6p6lein8qqp0uq5l.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBGtPELtloRSYaLiBVkmuOvXCzTNG_sYZY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>524381137442</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.bastonInteligenteMejorada</string>
+	<key>PROJECT_ID</key>
+	<string>baston-inteligente-3c2e7</string>
+	<key>STORAGE_BUCKET</key>
+	<string>baston-inteligente-3c2e7.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:524381137442:ios:d95d44611a347c2dbaf87b</string>
+	<key>DATABASE_URL</key>
+	<string>https://baston-inteligente-3c2e7-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
