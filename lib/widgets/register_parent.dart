@@ -1,9 +1,12 @@
-import 'package:baston_inteligente_mejorada/providers/login_form.dart';
 import 'package:baston_inteligente_mejorada/utils/decoration.dart';
 import 'package:baston_inteligente_mejorada/widgets/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../model/parent_model.dart';
+import '../providers/parent_provider.dart';
 
 class RegisterParent extends StatelessWidget {
   const RegisterParent({super.key});
@@ -24,7 +27,7 @@ class RegisterParent extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineMedium),
                 const SizedBox(height: 30),
                 ChangeNotifierProvider(
-                    create: (_) => LoginFormProvider(), child: _LoginForm())
+                    create: (_) => ParentProvider(), child: _LoginForm())
               ],
             )),
             const SizedBox(height: 50),
@@ -37,7 +40,7 @@ class RegisterParent extends StatelessWidget {
               ),
               child: const Text('¿Ya tienes una cuenta?',
                   style: TextStyle(
-                      decoration: TextDecoration.underline,
+                      decoration: TextDecoration.underline, 
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87)),
@@ -53,12 +56,37 @@ class RegisterParent extends StatelessWidget {
 class _LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final loginForm = Provider.of<LoginFormProvider>(context);
+    final registerProvider = Provider.of<ParentProvider>(context);
+
     return Form(
-      key: loginForm.formKey,
+      key: registerProvider.formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
+          TextFormField(
+            autocorrect: false,
+            decoration: InputDecorations.authInputDecoration(
+                hintText: 'Pedro',
+                labelText: 'Nombre',
+                prefixIcon: Icons.person),
+            onChanged: (value) => registerProvider.currentParent.name = value,
+          ),
+          TextFormField(
+            autocorrect: false,
+            decoration: InputDecorations.authInputDecoration(
+                hintText: 'Rodriguez',
+                labelText: 'Apellido',
+                prefixIcon: Icons.person),
+            onChanged: (value) => registerProvider.currentParent.lastName = value,
+          ),
+          TextFormField(
+            autocorrect: false,
+            decoration: InputDecorations.authInputDecoration(
+                hintText: '77914419',
+                labelText: 'Celular',
+                prefixIcon: Icons.person),
+            onChanged: (value) => registerProvider.currentParent.cellphone,
+          ),
           TextFormField(
             autocorrect: false,
             keyboardType: TextInputType.emailAddress,
@@ -67,7 +95,7 @@ class _LoginForm extends StatelessWidget {
               labelText: 'Correo  Electrónico',
               prefixIcon: Icons.email,
             ),
-            onChanged: (value) => loginForm.email = value,
+            onChanged: (value) => registerProvider.email = value,
             validator: (value) {
               String pattern =
                   r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -88,11 +116,29 @@ class _LoginForm extends StatelessWidget {
               labelText: 'Contraseña',
               prefixIcon: Icons.lock,
             ),
-            onChanged: (value) => loginForm.password = value,
+            onChanged: (value) => registerProvider.password = value,
             validator: (value) {
               return (value != null && value.length >= 6)
                   ? null
                   : 'La contraseña debe tener al menos 6 caracteres';
+            },
+          ),
+          const SizedBox(height: 30),
+          TextFormField(
+            autocorrect: false,
+            obscureText: true,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecorations.authInputDecoration(
+              hintText: '********',
+              labelText: 'Confirmar Contraseña',
+              prefixIcon: Icons.lock,
+            ),
+            validator: (value) {
+              return (value == null || value.length < 6)
+                  ? 'La contraseña debe tener al menos 6 caracteres'
+                  : value != registerProvider.password
+                      ? 'Las contraseñas no coinciden'
+                      : null;
             },
           ),
           const SizedBox(height: 30),
@@ -105,8 +151,8 @@ class _LoginForm extends StatelessWidget {
                 elevation: 0,
                 color: Colors.deepPurple,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 15, horizontal: 60),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 60),
                   child: const Text(
                     'Volver',
                     style: TextStyle(color: Colors.white),
@@ -117,7 +163,7 @@ class _LoginForm extends StatelessWidget {
                 },
               ),
               const SizedBox(width: 30),
-              _IngresarButton(loginForm: loginForm),
+              _IngresarButton(registerProvider: registerProvider),
             ],
           ),
         ],
@@ -127,12 +173,12 @@ class _LoginForm extends StatelessWidget {
 }
 
 class _IngresarButton extends StatelessWidget {
+  final ParentProvider registerProvider;
+
   const _IngresarButton({
     Key? key,
-    required this.loginForm,
+    required this.registerProvider,
   }) : super(key: key);
-
-  final LoginFormProvider loginForm;
 
   @override
   Widget build(BuildContext context) {
@@ -141,28 +187,57 @@ class _IngresarButton extends StatelessWidget {
       disabledColor: Colors.grey,
       elevation: 0,
       color: Colors.deepPurple,
-      onPressed: loginForm.isLoading
-          ? null
-          : () async {
-              FocusScope.of(context).unfocus();
-              if (!loginForm.isValidForm()) return;
-
-              loginForm.isLoading = true;
-
-              Future.delayed(const Duration(seconds: 2));
-
-              //TODO: validar el login con backend
-              loginForm.isLoading = false;
-
-              Navigator.pushReplacementNamed(context, 'code_register_parent');
-            },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 60),
         child: Text(
-          loginForm.isLoading ? 'Espere' : 'Siguiente',
+          registerProvider.isLoading ? 'Espere' : 'Siguiente',
           style: const TextStyle(color: Colors.white),
         ),
       ),
+      onPressed: () async {
+        FocusScope.of(context).unfocus();
+        if (!registerProvider.isValidForm()) return;
+
+        registerProvider.isLoading = true;
+
+        Future.delayed(const Duration(seconds: 2));
+
+        //TODO: validar el login con backend
+        registerProvider.isLoading = false;
+        try {
+          final credential = await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(
+                  email: registerProvider.email,
+                  password: registerProvider.password);
+
+          if (credential.user != null && context.mounted) {
+            Parent parent = Parent(
+                name: registerProvider.currentParent.name,
+                lastName: registerProvider.currentParent.lastName,
+                codeBlind: registerProvider
+                    .currentParent.codeBlind, //TODO MODIFICAR LUEGO
+                cellphone: registerProvider.currentParent.cellphone);
+
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => CodeBlindScreen(
+            //           code: credential.user?.uid,
+            //           registerProvider: registerProvider),
+            //     ));
+            Navigator.pushReplacementNamed(context, 'code_register_parent');
+            registerProvider.postNewParentUser(parent);
+          }
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'weak-password') {
+            print('The password provided is too weak.');
+          } else if (e.code == 'email-already-in-use') {
+            print('The account already exists for that email.');
+          }
+        } catch (e) {
+          print(e);
+        }
+      },
     );
   }
 }

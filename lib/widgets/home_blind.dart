@@ -14,7 +14,7 @@ class HomeBlind extends StatefulWidget {
   const HomeBlind({Key? key}) : super(key: key);
 
   @override
-  _ConvexAppExampleState createState() => _ConvexAppExampleState();
+  State<HomeBlind> createState() => _ConvexAppExampleState();
 }
 
 class _ConvexAppExampleState extends State<HomeBlind> {

@@ -9,7 +9,7 @@ class HomeParent extends StatefulWidget {
   const HomeParent({Key? key}) : super(key: key);
 
   @override
-  _ConvexAppExampleState createState() => _ConvexAppExampleState();
+  State<HomeParent> createState() => _ConvexAppExampleState();
 }
 
 class _ConvexAppExampleState extends State<HomeParent> {

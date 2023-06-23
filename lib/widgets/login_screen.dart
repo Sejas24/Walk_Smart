@@ -182,11 +182,11 @@ class _IngresarButton extends StatelessWidget {
 
                   loginForm.isLoading = false;
                   try {
-                     final credential = await FirebaseAuth.instance
+                    await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
                             email: loginForm.email,
                             password: loginForm.password);
-                    if (sharedProvider.isBlind) {
+                    if (sharedProvider.isBlind && context.mounted) {
                       Navigator.pushReplacementNamed(context, 'homeblind');
                     } else {
                       Navigator.pushReplacementNamed(context, 'homeparent');

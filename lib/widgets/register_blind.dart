@@ -135,7 +135,8 @@ class _BlindRegisterForm extends StatelessWidget {
                 elevation: 0,
                 color: Colors.deepPurple,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 60),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 60),
                   child: const Text(
                     'Volver',
                     style: TextStyle(color: Colors.white),
@@ -156,13 +157,12 @@ class _BlindRegisterForm extends StatelessWidget {
 }
 
 class _IngresarButton extends StatelessWidget {
-  _IngresarButton({
+  final BlindProvider registerProvider;
+
+  const _IngresarButton({
     Key? key,
     required this.registerProvider,
   }) : super(key: key);
-
-  final BlindProvider registerProvider;
-  final BlindProvider blindProvider = BlindProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +179,6 @@ class _IngresarButton extends StatelessWidget {
         ),
       ),
       onPressed: () async {
-        //print(registerProvider.isValidForm());
         FocusScope.of(context).unfocus();
         if (!registerProvider.isValidForm()) return;
 
@@ -195,7 +194,7 @@ class _IngresarButton extends StatelessWidget {
                   email: registerProvider.email,
                   password: registerProvider.password);
 
-          if (credential.user != null) {
+          if (credential.user != null && context.mounted) {
             Blind blind = Blind(
                 name: registerProvider.currentBlind.name,
                 codeBlind: registerProvider
@@ -205,17 +204,17 @@ class _IngresarButton extends StatelessWidget {
                 parentListAcepted: [],
                 parentListRequested: []);
 
-            Navigator.push (
+            Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => CodeBlindScreen(
-                      code: credential.user?.uid, blindProvider: blindProvider),
+                      code: credential.user?.uid, blindProvider: registerProvider),
                 ));
-            blindProvider.postNewBlindUser(blind);
+            registerProvider.postNewBlindUser(blind);
           }
         } on FirebaseAuthException catch (e) {
           if (e.code == 'weak-password') {
-             print('The password provided is too weak.');
+            print('The password provided is too weak.');
           } else if (e.code == 'email-already-in-use') {
             print('The account already exists for that email.');
           }
