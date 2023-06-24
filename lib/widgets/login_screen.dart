@@ -24,7 +24,8 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
               children: [
                 const SizedBox(height: 10),
-                Text('Login', style: Theme.of(context).textTheme.headlineMedium),
+                Text('Login',
+                    style: Theme.of(context).textTheme.headlineMedium),
                 const SizedBox(height: 30),
                 ChangeNotifierProvider(
                     create: (_) => LoginFormProvider(),
@@ -110,6 +111,7 @@ class _LoginForm extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Resize(
                 builder: () {
@@ -121,7 +123,9 @@ class _LoginForm extends StatelessWidget {
                     color: Colors.deepPurple,
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 2.rem),
+                        vertical: MediaQuery.of(context).size.width * 0.04,
+                        horizontal: MediaQuery.of(context).size.width * 0.1,
+                      ),
                       child: const Text(
                         'Volver',
                         style: TextStyle(color: Colors.white),
@@ -161,49 +165,47 @@ class _IngresarButton extends StatelessWidget {
     return Resize(
       builder: () {
         return MaterialButton(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          disabledColor: Colors.grey,
-          elevation: 0,
-          color: Colors.deepPurple,
-          onPressed: loginForm.isLoading
-              ? null
-              : () async {
-                  FocusScope.of(context).unfocus();
-                  if (!loginForm.isValidForm()) return;
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            disabledColor: Colors.grey,
+            elevation: 0,
+            color: Colors.deepPurple,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.width * 0.04,
+                horizontal: MediaQuery.of(context).size.width * 0.1,
+              ),
+              child: Text(
+                loginForm.isLoading ? 'Espere' : 'Ingresar',
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            onPressed: () async {
+                    FocusScope.of(context).unfocus();
+                    if (!loginForm.isValidForm()) return;
 
-                  loginForm.isLoading = true;
+                    loginForm.isLoading = true;
 
-                  Future.delayed(const Duration(seconds: 2));
+                    Future.delayed(const Duration(seconds: 2));
 
-                  //TODO: validar el login con backend
-                  /*print(this.sharedProvider.isBlind);
+                    //TODO: validar el login con backend
+                    /*print(this.sharedProvider.isBlind);
                   print(sharedProvider.isParent);*/
 
-                  loginForm.isLoading = false;
-                  try {
-                    await FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                            email: loginForm.email,
-                            password: loginForm.password);
-                    if (sharedProvider.isBlind && context.mounted) {
-                      Navigator.pushReplacementNamed(context, 'homeblind');
-                    } else {
-                      Navigator.pushReplacementNamed(context, 'homeparent');
+                    loginForm.isLoading = false;
+                    try {
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: loginForm.email, password: loginForm.password);
+                      if (sharedProvider.isBlind && context.mounted) {
+                        Navigator.pushReplacementNamed(context, 'homeblind');
+                      } else {
+                        Navigator.pushReplacementNamed(context, 'homeparent');
+                      }
+                    } catch (e) {
+                      //TODO mostar error al usuario de contraseña o correo invalido
+                      // NotificationProvided.showSnackbar(e.toString());
                     }
-                  } catch (e) {
-                    //mostar error al usuario de contraseña o correo invalido
-                    NotificationProvided.showSnackbar(e.toString());
-                  }
-                },
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 2.rem),
-            child: Text(
-              loginForm.isLoading ? 'Espere' : 'Ingresar',
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-        );
+                  });
       },
     );
   }

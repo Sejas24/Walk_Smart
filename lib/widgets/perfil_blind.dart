@@ -1,7 +1,9 @@
+import 'package:baston_inteligente_mejorada/providers/providers.dart';
 import 'package:flutter/material.dart';
 
 class PerfilBlindScreen extends StatelessWidget {
-  const PerfilBlindScreen({super.key});
+  final BlindProvider blindProvider;
+  const PerfilBlindScreen({super.key, required this.blindProvider});
 
   @override
   Widget build(BuildContext context) {

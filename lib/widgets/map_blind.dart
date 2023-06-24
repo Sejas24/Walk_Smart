@@ -1,7 +1,9 @@
+import 'package:baston_inteligente_mejorada/providers/blind_provider.dart';
 import 'package:flutter/material.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  final BlindProvider blindProvider;
+  const MapScreen({super.key, required this.blindProvider});
 
   @override
   MapaBlindScreen createState() => MapaBlindScreen();
@@ -19,7 +21,6 @@ class MapaBlindScreen extends State<MapScreen> {
 
   void fetchLocation() async {
     //Location location = Location();
-    
 
     //currentLocation = await location.getLocation();
     setState(() {

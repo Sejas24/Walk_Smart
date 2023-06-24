@@ -40,7 +40,7 @@ class RegisterParent extends StatelessWidget {
               ),
               child: const Text('¿Ya tienes una cuenta?',
                   style: TextStyle(
-                      decoration: TextDecoration.underline, 
+                      decoration: TextDecoration.underline,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87)),
@@ -77,14 +77,15 @@ class _LoginForm extends StatelessWidget {
                 hintText: 'Rodriguez',
                 labelText: 'Apellido',
                 prefixIcon: Icons.person),
-            onChanged: (value) => registerProvider.currentParent.lastName = value,
+            onChanged: (value) =>
+                registerProvider.currentParent.lastName = value,
           ),
           TextFormField(
             autocorrect: false,
             decoration: InputDecorations.authInputDecoration(
                 hintText: '77914419',
                 labelText: 'Celular',
-                prefixIcon: Icons.person),
+                prefixIcon: Icons.add_ic_call_outlined),
             onChanged: (value) => registerProvider.currentParent.cellphone,
           ),
           TextFormField(
@@ -214,9 +215,22 @@ class _IngresarButton extends StatelessWidget {
             Parent parent = Parent(
                 name: registerProvider.currentParent.name,
                 lastName: registerProvider.currentParent.lastName,
+                email: registerProvider.email,
                 codeBlind: registerProvider
                     .currentParent.codeBlind, //TODO MODIFICAR LUEGO
                 cellphone: registerProvider.currentParent.cellphone);
+
+            print(parent.toString());
+            print('!' +
+                parent.name +
+                '!' +
+                parent.lastName +
+                '!' +
+                parent.email +
+                '!' +
+                parent.codeBlind +
+                '!' +
+                parent.cellphone.toString());
 
             // Navigator.push(
             //     context,

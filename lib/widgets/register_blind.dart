@@ -10,46 +10,58 @@ import '../providers/providers.dart';
 import 'code_user_baston.dart';
 
 class RegisterBlind extends StatelessWidget {
-  const RegisterBlind({super.key});
+  final BlindProvider blindProvider;
+  const RegisterBlind({super.key, required this.blindProvider});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: BackgroundScreen(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 250),
-            CardContainer(
+      body: BackgroundScreen(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+              CardContainer(
                 child: Column(
-              children: [
-                const SizedBox(height: 10),
-                Text('Nueva Cuenta No Vidente',
-                    style: Theme.of(context).textTheme.headlineMedium),
-                const SizedBox(height: 30),
-                ChangeNotifierProvider(
-                    create: (_) => BlindProvider(), child: _BlindRegisterForm())
-              ],
-            )),
-            const SizedBox(height: 50),
-            TextButton(
-              onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
-              style: ButtonStyle(
-                overlayColor:
-                    MaterialStateProperty.all(Colors.indigo.withOpacity(0.6)),
-                shape: MaterialStateProperty.all(const StadiumBorder()),
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      'Nueva Cuenta No Vidente',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: 30),
+                    ChangeNotifierProvider.value(
+                      value: blindProvider,
+                      child: _BlindRegisterForm(),
+                    ),
+                  ],
+                ),
               ),
-              child: const Text('¿Ya tienes una cuenta?',
+              const SizedBox(height: 50),
+              TextButton(
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, 'login'),
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(
+                    Colors.indigo.withOpacity(0.6),
+                  ),
+                  shape: MaterialStateProperty.all(StadiumBorder()),
+                ),
+                child: const Text(
+                  '¿Ya tienes una cuenta?',
                   style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87)),
-            ),
-          ],
+                    decoration: TextDecoration.underline,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -66,17 +78,30 @@ class _BlindRegisterForm extends StatelessWidget {
           TextFormField(
             autocorrect: false,
             decoration: InputDecorations.authInputDecoration(
-                hintText: 'Pedro Rodriguez',
-                labelText: 'Nombre Completo',
-                prefixIcon: Icons.person),
+              hintText: 'Pedro',
+              labelText: 'Nombre',
+              prefixIcon: Icons.person,
+            ),
             onChanged: (value) => registerProvider.currentBlind.name = value,
           ),
+          const SizedBox(height: 30),
+          TextFormField(
+            autocorrect: false,
+            decoration: InputDecorations.authInputDecoration(
+              hintText: 'Rodriguez',
+              labelText: 'Apellido',
+              prefixIcon: Icons.person_outline_rounded,
+            ),
+            onChanged: (value) =>
+                registerProvider.currentBlind.lastName = value,
+          ),
+          const SizedBox(height: 30),
           TextFormField(
             autocorrect: false,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecorations.authInputDecoration(
               hintText: 'pepito@host.com',
-              labelText: 'Correo  Electrónico',
+              labelText: 'Correo Electrónico',
               prefixIcon: Icons.email,
             ),
             onChanged: (value) => registerProvider.email = value,
@@ -127,27 +152,36 @@ class _BlindRegisterForm extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           Row(
+            mainAxisAlignment:
+                MainAxisAlignment.center, // Centra los botones horizontalmente
             children: [
-              MaterialButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                disabledColor: Colors.grey,
-                elevation: 0,
-                color: Colors.deepPurple,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 60),
-                  child: const Text(
-                    'Volver',
-                    style: TextStyle(color: Colors.white),
+              Expanded(
+                child: MaterialButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
+                  disabledColor: Colors.grey,
+                  elevation: 0,
+                  color: Colors.deepPurple,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.width * 0.04,
+                      horizontal: MediaQuery.of(context).size.width * 0.1,
+                    ),
+                    child: const Text(
+                      'Volver',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, 'login');
+                  },
                 ),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, 'login');
-                },
               ),
               const SizedBox(width: 20),
-              _IngresarButton(registerProvider: registerProvider),
+              Expanded(
+                child: _IngresarButton(registerProvider: registerProvider),
+              ),
             ],
           ),
         ],
@@ -166,62 +200,74 @@ class _IngresarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialButton(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      disabledColor: Colors.grey,
-      elevation: 0,
-      color: Colors.deepPurple,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 60),
-        child: Text(
-          registerProvider.isLoading ? 'Espere' : 'Ingresar',
-          style: const TextStyle(color: Colors.white),
-        ),
-      ),
-      onPressed: () async {
-        FocusScope.of(context).unfocus();
-        if (!registerProvider.isValidForm()) return;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        MaterialButton(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          disabledColor: Colors.grey,
+          elevation: 0,
+          color: Colors.deepPurple,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.width * 0.04,
+              horizontal: MediaQuery.of(context).size.width * 0.1,
+            ),
+            child: Text(
+              registerProvider.isLoading ? 'Espere' : 'Ingresar',
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+          onPressed: () async {
+            FocusScope.of(context).unfocus();
+            if (!registerProvider.isValidForm()) return;
 
-        registerProvider.isLoading = true;
+            registerProvider.isLoading = true;
 
-        Future.delayed(const Duration(seconds: 2));
+            Future.delayed(const Duration(seconds: 2));
 
-        registerProvider.isLoading = false;
+            registerProvider.isLoading = false;
 
-        try {
-          final credential = await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
+            try {
+              final credential =
+                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                email: registerProvider.email,
+                password: registerProvider.password,
+              );
+
+              if (credential.user != null && context.mounted) {
+                Blind blind = Blind(
+                  name: registerProvider.currentBlind.name,
+                  lastName: registerProvider.currentBlind.lastName,
                   email: registerProvider.email,
-                  password: registerProvider.password);
-
-          if (credential.user != null && context.mounted) {
-            Blind blind = Blind(
-                name: registerProvider.currentBlind.name,
-                codeBlind: registerProvider
-                    .currentBlind.codeBlind, //TODO MODIFICAR LUEGO
-                altitud: registerProvider.currentBlind.altitud,
-                latitud: registerProvider.currentBlind.latitud,
-                parentListAcepted: [],
-                parentListRequested: []);
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CodeBlindScreen(
-                      code: credential.user?.uid, blindProvider: registerProvider),
-                ));
-            registerProvider.postNewBlindUser(blind);
-          }
-        } on FirebaseAuthException catch (e) {
-          if (e.code == 'weak-password') {
-            print('The password provided is too weak.');
-          } else if (e.code == 'email-already-in-use') {
-            print('The account already exists for that email.');
-          }
-        } catch (e) {
-          print(e);
-        }
-      },
+                  codeBlind: credential.user!.uid,
+                  altitud: registerProvider.currentBlind.altitud,
+                  latitud: registerProvider.currentBlind.latitud,
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CodeBlindScreen(
+                      code: credential.user?.uid,
+                      blindProvider: registerProvider,
+                    ),
+                  ),
+                );
+                registerProvider.postNewBlindUser(blind);
+              }
+            } on FirebaseAuthException catch (e) {
+              if (e.code == 'weak-password') {
+                print('The password provided is too weak.');
+              } else if (e.code == 'email-already-in-use') {
+                print('The account already exists for that email.');
+              }
+            } catch (e) {
+              print(e);
+            }
+          },
+        ),
+      ],
     );
   }
 }
