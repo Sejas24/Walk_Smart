@@ -1,5 +1,6 @@
 import 'package:baston_inteligente_mejorada/model/blind_model.dart';
 import 'package:baston_inteligente_mejorada/providers/blind_provider.dart';
+import 'package:baston_inteligente_mejorada/providers/providers.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -8,8 +9,11 @@ import 'widgets.dart';
 const _kPages = <String, IconData>{'Perfil': Icons.person, 'Mapa': Icons.map};
 
 class HomeBlind extends StatefulWidget {
+  final SharedProvider sharedProvider;
   final BlindProvider blindProvider;
-  const HomeBlind({Key? key, required this.blindProvider}) : super(key: key);
+  const HomeBlind(
+      {Key? key, required this.blindProvider, required this.sharedProvider})
+      : super(key: key);
 
   @override
   State<HomeBlind> createState() => _HomeBlindState();
@@ -17,11 +21,13 @@ class HomeBlind extends StatefulWidget {
 
 class _HomeBlindState extends State<HomeBlind> {
   late BlindProvider blindProvider;
+  late SharedProvider sharedProvider;
 
   @override
   void initState() {
     super.initState();
     blindProvider = widget.blindProvider;
+    sharedProvider = widget.sharedProvider;
   }
 
   @override
@@ -30,19 +36,17 @@ class _HomeBlindState extends State<HomeBlind> {
       PerfilBlindScreen(
         blindProvider: blindProvider,
       ),
-      MapScreen(
+      MapBlindScreen(
         blindProvider: blindProvider,
       )
     ];
-
-    print(blindProvider.email);
 
     return DefaultTabController(
       length: pagesOptions.length,
       initialIndex: 1,
       child: Scaffold(
         body: FutureBuilder(
-          future: blindProvider.getBlindByEmail(blindProvider.email),
+          future: blindProvider.getBlindByEmail(sharedProvider.email),
           builder: (context, snapshot) {
             return Column(
               children: [

@@ -2,6 +2,7 @@ import 'package:baston_inteligente_mejorada/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 import '../providers/shared_provider.dart';
+import 'login_screen.dart';
 
 class TipoRegistro extends StatelessWidget {
   final SharedProvider sharedProvider;
@@ -14,7 +15,7 @@ class TipoRegistro extends StatelessWidget {
       body: Material(
         child: TypeRegisterBackground(
           child: Padding(
-            padding: const EdgeInsets.all(120.0),
+            padding: const EdgeInsets.all(0.0),
             child: Align(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

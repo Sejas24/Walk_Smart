@@ -9,9 +9,14 @@ import '../model/blind_model.dart';
 import '../providers/providers.dart';
 import 'code_user_baston.dart';
 
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+
 class RegisterBlind extends StatelessWidget {
   final BlindProvider blindProvider;
-  const RegisterBlind({super.key, required this.blindProvider});
+  final SharedProvider sharedProvider;
+  RegisterBlind(
+      {super.key, required this.blindProvider, required this.sharedProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +37,9 @@ class RegisterBlind extends StatelessWidget {
                     const SizedBox(height: 30),
                     ChangeNotifierProvider.value(
                       value: blindProvider,
-                      child: _BlindRegisterForm(),
+                      child: _BlindRegisterForm(
+                          sharedProvider: sharedProvider,
+                          blindProvider: blindProvider),
                     ),
                   ],
                 ),
@@ -66,12 +73,17 @@ class RegisterBlind extends StatelessWidget {
 }
 
 class _BlindRegisterForm extends StatelessWidget {
+  final SharedProvider sharedProvider;
+  final BlindProvider blindProvider;
+
+  _BlindRegisterForm(
+      {required this.sharedProvider, required this.blindProvider});
+
   @override
   Widget build(BuildContext context) {
-    final registerProvider = Provider.of<BlindProvider>(context);
     //var confirmePass = "";
     return Form(
-      key: registerProvider.formKey,
+      key: formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
@@ -82,7 +94,7 @@ class _BlindRegisterForm extends StatelessWidget {
               labelText: 'Nombre',
               prefixIcon: Icons.person,
             ),
-            onChanged: (value) => registerProvider.currentBlind.name = value,
+            onChanged: (value) => blindProvider.currentBlind.name = value,
           ),
           const SizedBox(height: 30),
           TextFormField(
@@ -92,8 +104,7 @@ class _BlindRegisterForm extends StatelessWidget {
               labelText: 'Apellido',
               prefixIcon: Icons.person_outline_rounded,
             ),
-            onChanged: (value) =>
-                registerProvider.currentBlind.lastName = value,
+            onChanged: (value) => blindProvider.currentBlind.lastName = value,
           ),
           const SizedBox(height: 30),
           TextFormField(
@@ -104,7 +115,7 @@ class _BlindRegisterForm extends StatelessWidget {
               labelText: 'Correo Electrónico',
               prefixIcon: Icons.email,
             ),
-            onChanged: (value) => registerProvider.email = value,
+            onChanged: (value) => sharedProvider.email = value,
             validator: (value) {
               String pattern =
                   r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -125,7 +136,7 @@ class _BlindRegisterForm extends StatelessWidget {
               labelText: 'Contraseña',
               prefixIcon: Icons.lock,
             ),
-            onChanged: (value) => registerProvider.password = value,
+            onChanged: (value) => sharedProvider.password = value,
             validator: (value) {
               return (value != null && value.length >= 6)
                   ? null
@@ -145,7 +156,7 @@ class _BlindRegisterForm extends StatelessWidget {
             validator: (value) {
               return (value == null || value.length < 6)
                   ? 'La contraseña debe tener al menos 6 caracteres'
-                  : value != registerProvider.password
+                  : value != sharedProvider.password
                       ? 'Las contraseñas no coinciden'
                       : null;
             },
@@ -180,7 +191,9 @@ class _BlindRegisterForm extends StatelessWidget {
               ),
               const SizedBox(width: 20),
               Expanded(
-                child: _IngresarButton(registerProvider: registerProvider),
+                child: _IngresarButton(
+                    sharedProvider: sharedProvider,
+                    blindProvider: blindProvider),
               ),
             ],
           ),
@@ -191,12 +204,12 @@ class _BlindRegisterForm extends StatelessWidget {
 }
 
 class _IngresarButton extends StatelessWidget {
-  final BlindProvider registerProvider;
+  final SharedProvider sharedProvider;
+  final BlindProvider blindProvider;
 
-  const _IngresarButton({
-    Key? key,
-    required this.registerProvider,
-  }) : super(key: key);
+  _IngresarButton(
+      {Key? key, required this.sharedProvider, required this.blindProvider})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -215,46 +228,46 @@ class _IngresarButton extends StatelessWidget {
               horizontal: MediaQuery.of(context).size.width * 0.1,
             ),
             child: Text(
-              registerProvider.isLoading ? 'Espere' : 'Ingresar',
+              sharedProvider.isLoading ? 'Espere' : 'Ingresar',
               style: const TextStyle(color: Colors.white),
             ),
           ),
           onPressed: () async {
             FocusScope.of(context).unfocus();
-            if (!registerProvider.isValidForm()) return;
+            if (!sharedProvider.isValidForm(formKey)) return;
 
-            registerProvider.isLoading = true;
+            sharedProvider.isLoading = true;
 
             Future.delayed(const Duration(seconds: 2));
 
-            registerProvider.isLoading = false;
+            sharedProvider.isLoading = false;
 
             try {
               final credential =
                   await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                email: registerProvider.email,
-                password: registerProvider.password,
+                email: sharedProvider.email,
+                password: sharedProvider.password,
               );
 
               if (credential.user != null && context.mounted) {
                 Blind blind = Blind(
-                  name: registerProvider.currentBlind.name,
-                  lastName: registerProvider.currentBlind.lastName,
-                  email: registerProvider.email,
-                  codeBlind: credential.user!.uid,
-                  altitud: registerProvider.currentBlind.altitud,
-                  latitud: registerProvider.currentBlind.latitud,
+                  name: blindProvider.currentBlind.name,
+                  lastName: blindProvider.currentBlind.lastName,
+                  email: sharedProvider.email,
+                  codeBlind: credential.user!.uid.substring(0, 7),
+                  altitud: blindProvider.currentBlind.altitud,
+                  latitud: blindProvider.currentBlind.latitud,
                 );
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => CodeBlindScreen(
-                      code: credential.user?.uid,
-                      blindProvider: registerProvider,
+                      code: credential.user?.uid.substring(0, 7),
+                      blindProvider: blindProvider,
                     ),
                   ),
                 );
-                registerProvider.postNewBlindUser(blind);
+                blindProvider.postNewBlindUser(blind);
               }
             } on FirebaseAuthException catch (e) {
               if (e.code == 'weak-password') {

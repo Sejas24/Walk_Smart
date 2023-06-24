@@ -1,13 +1,14 @@
+import 'package:baston_inteligente_mejorada/providers/parent_provider.dart';
 import 'package:baston_inteligente_mejorada/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:resize/resize.dart';
 
-import '../providers/login_form.dart';
 import '../providers/notification_provider.dart';
 import '../providers/shared_provider.dart';
 import '../utils/decoration.dart';
+
 
 class LoginScreen extends StatelessWidget {
   final SharedProvider sharedProvider;
@@ -27,8 +28,8 @@ class LoginScreen extends StatelessWidget {
                 Text('Login',
                     style: Theme.of(context).textTheme.headlineMedium),
                 const SizedBox(height: 30),
-                ChangeNotifierProvider(
-                    create: (_) => LoginFormProvider(),
+                ChangeNotifierProvider.value(
+                    value: sharedProvider,
                     child: _LoginForm(sharedProvider: sharedProvider)),
               ],
             )),
@@ -67,9 +68,10 @@ class _LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loginForm = Provider.of<LoginFormProvider>(context);
+final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
     return Form(
-      key: loginForm.formKey,
+      key: formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
@@ -81,7 +83,7 @@ class _LoginForm extends StatelessWidget {
               labelText: 'Correo  Electrónico',
               prefixIcon: Icons.email,
             ),
-            onChanged: (value) => loginForm.email = value,
+            onChanged: (value) => sharedProvider.email = value,
             validator: (value) {
               String pattern =
                   r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -102,7 +104,7 @@ class _LoginForm extends StatelessWidget {
               labelText: 'Contraseña',
               prefixIcon: Icons.lock,
             ),
-            onChanged: (value) => loginForm.password = value,
+            onChanged: (value) => sharedProvider.password = value,
             validator: (value) {
               return (value != null && value.length >= 6)
                   ? null
@@ -139,7 +141,6 @@ class _LoginForm extends StatelessWidget {
               ),
               const SizedBox(width: 20),
               _IngresarButton(
-                loginForm: loginForm,
                 sharedProvider: sharedProvider,
               ),
             ],
@@ -151,19 +152,19 @@ class _LoginForm extends StatelessWidget {
 }
 
 class _IngresarButton extends StatelessWidget {
+  final SharedProvider sharedProvider;
+
   const _IngresarButton({
     Key? key,
-    required this.loginForm,
     required this.sharedProvider,
   }) : super(key: key);
-
-  final LoginFormProvider loginForm;
-  final SharedProvider sharedProvider;
 
   @override
   Widget build(BuildContext context) {
     return Resize(
       builder: () {
+final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
         return MaterialButton(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -176,36 +177,37 @@ class _IngresarButton extends StatelessWidget {
                 horizontal: MediaQuery.of(context).size.width * 0.1,
               ),
               child: Text(
-                loginForm.isLoading ? 'Espere' : 'Ingresar',
+                sharedProvider.isLoading ? 'Espere' : 'Ingresar',
                 style: const TextStyle(color: Colors.white),
               ),
             ),
             onPressed: () async {
-                    FocusScope.of(context).unfocus();
-                    if (!loginForm.isValidForm()) return;
+              FocusScope.of(context).unfocus();
+              if (!sharedProvider.isValidForm(formKey)) return;
 
-                    loginForm.isLoading = true;
+              sharedProvider.isLoading = true;
 
-                    Future.delayed(const Duration(seconds: 2));
+              Future.delayed(const Duration(seconds: 2));
 
-                    //TODO: validar el login con backend
-                    /*print(this.sharedProvider.isBlind);
+              //TODO: validar el login con backend
+              /*print(this.sharedProvider.isBlind);
                   print(sharedProvider.isParent);*/
 
-                    loginForm.isLoading = false;
-                    try {
-                      await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: loginForm.email, password: loginForm.password);
-                      if (sharedProvider.isBlind && context.mounted) {
-                        Navigator.pushReplacementNamed(context, 'homeblind');
-                      } else {
-                        Navigator.pushReplacementNamed(context, 'homeparent');
-                      }
-                    } catch (e) {
-                      //TODO mostar error al usuario de contraseña o correo invalido
-                      // NotificationProvided.showSnackbar(e.toString());
-                    }
-                  });
+              sharedProvider.isLoading = false;
+              try {
+                await FirebaseAuth.instance.signInWithEmailAndPassword(
+                    email: sharedProvider.email,
+                    password: sharedProvider.password);
+                if (sharedProvider.isBlind && context.mounted) {
+                  Navigator.pushReplacementNamed(context, 'homeblind');
+                } else {
+                  Navigator.pushReplacementNamed(context, 'homeparent');
+                }
+              } catch (e) {
+                //TODO mostar error al usuario de contraseña o correo invalido
+                // NotificationProvided.showSnackbar(e.toString());
+              }
+            });
       },
     );
   }

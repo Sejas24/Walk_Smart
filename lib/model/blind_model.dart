@@ -1,4 +1,5 @@
 class Blind {
+  late String documentId;
   late String name;
   late String lastName;
   late String codeBlind;
@@ -8,7 +9,8 @@ class Blind {
 
   // Constructor
   Blind(
-      {required this.name,
+      { this.documentId = '',
+      required this.name,
       required this.lastName,
       required this.email,
       required this.codeBlind,
@@ -17,6 +19,7 @@ class Blind {
 
   // Default constructor
   Blind.defaultBlind() {
+    documentId = '';
     name = '';
     lastName = '';
     email = '';
@@ -26,6 +29,7 @@ class Blind {
   }
 
   // Getters
+  String get getDocumentId => documentId;
   String get getName => name;
   String get getLastName => lastName;
   String get getEmail => email;
@@ -34,6 +38,7 @@ class Blind {
   String get getLatitud => latitud;
 
   // Setters
+  set setDocumentId(String value) => documentId = value;
   set setName(String value) => name = value;
   set setLastName(String value) => lastName = value;
   set setEmail(String value) => email = value;

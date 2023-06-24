@@ -1,8 +1,9 @@
 import 'package:baston_inteligente_mejorada/providers/blind_provider.dart';
-import 'package:baston_inteligente_mejorada/providers/firebase_provider.dart';
-import 'package:baston_inteligente_mejorada/providers/login_form.dart';
 import 'package:baston_inteligente_mejorada/providers/parent_provider.dart';
 import 'package:baston_inteligente_mejorada/providers/shared_provider.dart';
+import 'package:baston_inteligente_mejorada/widgets/code_register_parent.dart';
+import 'package:baston_inteligente_mejorada/widgets/login_screen.dart';
+import 'package:baston_inteligente_mejorada/widgets/register_parent.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +26,6 @@ class AppState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => LoginFormProvider()),
       ChangeNotifierProvider(create: (_) => SharedProvider()),
     ], child: const App());
   }
@@ -56,12 +56,27 @@ class _AppState extends State<App> {
             ),
         'register_blind': (context) => RegisterBlind(
               blindProvider: blindProvider,
+              sharedProvider: sharedProvider,
             ),
-        'register_parent': (context) => const RegisterParent(),
-        'login': (context) => LoginScreen(sharedProvider: sharedProvider),
-        'code_register_parent': (context) => const CodeRegisterParentScreen(),
-        'homeblind': (context) => HomeBlind(blindProvider: blindProvider),
-        'homeparent': (context) => HomeParent(),
+        'register_parent': (context) => RegisterParent(
+              sharedProvider: sharedProvider,
+              parentProvider: parentProvider,
+            ),
+        'login': (context) => LoginScreen(
+              sharedProvider: sharedProvider,
+            ),
+        'code_register_parent': (context) => CodeRegisterParentScreen(
+              sharedProvider: sharedProvider,
+              parentProvider: parentProvider,
+            ),
+        'homeblind': (context) => HomeBlind(
+              sharedProvider: sharedProvider,
+              blindProvider: blindProvider,
+            ),
+        'homeparent': (context) => HomeParent(
+              sharedProvider: sharedProvider,
+              parentProvider: parentProvider,
+            ),
       },
       // scaffoldMessengerKey: NotificationService.messengerkey,
       theme: ThemeData.light().copyWith(

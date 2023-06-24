@@ -1,15 +1,15 @@
 import 'package:baston_inteligente_mejorada/providers/blind_provider.dart';
 import 'package:flutter/material.dart';
 
-class MapScreen extends StatefulWidget {
+class MapBlindScreen extends StatefulWidget {
   final BlindProvider blindProvider;
-  const MapScreen({super.key, required this.blindProvider});
+  const MapBlindScreen({super.key, required this.blindProvider});
 
   @override
-  MapaBlindScreen createState() => MapaBlindScreen();
+  _MapBlindScreen createState() => _MapBlindScreen();
 }
 
-class MapaBlindScreen extends State<MapScreen> {
+class _MapBlindScreen extends State<MapBlindScreen> {
   //late GoogleMapController mapController;
   //LocationData? currentLocation;
 

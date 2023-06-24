@@ -1,4 +1,5 @@
 class Parent {
+  String documentId = '';
   String name = '';
   String lastName = '';
   String email = '';
@@ -7,7 +8,8 @@ class Parent {
 
   // Constructor
   Parent(
-      {required this.name,
+      {this.documentId = '',
+      required this.name,
       required this.lastName,
       required this.email,
       required this.codeBlind,
@@ -15,6 +17,7 @@ class Parent {
 
   // Default constructor
   Parent.defaultParent() {
+    documentId = '';
     name = '';
     lastName = '';
     email = '';
@@ -23,6 +26,7 @@ class Parent {
   }
 
   // Getters
+  String get getDocumentId => documentId;
   String get getName => name;
   String get getLastName => lastName;
   String get getEmail => email;
@@ -30,6 +34,7 @@ class Parent {
   int get getCellphone => cellphone;
 
   // Setters
+  set setDocumentId(String value) => documentId = value;
   set setName(String value) => name = value;
   set setLastName(String value) => lastName = value;
   set setEmail(String value) => email = value;

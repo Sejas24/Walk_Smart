@@ -1,106 +1,150 @@
+import 'package:baston_inteligente_mejorada/providers/parent_provider.dart';
+import 'package:baston_inteligente_mejorada/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/login_form.dart';
 import '../utils/decoration.dart';
 import 'card_container.dart';
 import 'type_register_background.dart';
 
+final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
 class CodeRegisterParentScreen extends StatelessWidget {
-  const CodeRegisterParentScreen({super.key});
+  final SharedProvider sharedProvider;
+  final ParentProvider parentProvider;
+  const CodeRegisterParentScreen(
+      {super.key, required this.parentProvider, required this.sharedProvider});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: TypeRegisterBackground(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 250),
-            CardContainer(
+      body: TypeRegisterBackground(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+              CardContainer(
                 child: Column(
-              children: [
-                const SizedBox(height: 10),
-                Text('Codigo del familiar No Vidente',
-                    style: Theme.of(context).textTheme.headlineMedium),
-                const SizedBox(height: 30),
-                ChangeNotifierProvider(
-                    create: (_) => LoginFormProvider(), child: _LoginForm())
-              ],
-            )),
-            const SizedBox(height: 50),
-          ],
-        ),
-      ),
-    ));
-  }
-}
-
-class _LoginForm extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final loginForm = Provider.of<LoginFormProvider>(context);
-    return SizedBox(
-      child: Form(
-        key: loginForm.formKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        child: Column(
-          children: [
-            const SizedBox(height: 30),
-            TextFormField(
-              autocorrect: false,
-              obscureText: true,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecorations.authInputDecoration(
-                hintText: 'ASG350',
-                labelText: 'Codigo No Vidente',
-                prefixIcon: Icons.lock,
-              ),
-              onChanged: (value) => loginForm.password = value,
-              validator: (value) {
-                return (value != null && value.length >= 6)
-                    ? null
-                    : 'El codigo debe tener 6 caracteres';
-              },
-            ),
-            const SizedBox(height: 30),
-            Row(
-              children: [
-                MaterialButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  disabledColor: Colors.grey,
-                  elevation: 0,
-                  color: Colors.deepPurple,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 80),
-                    child: const Text(
-                      'Volver',
-                      style: TextStyle(color: Colors.white),
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      'Codigo del familiar No Vidente',
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
-                  ),
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, 'register_parent');
-                  },
+                    const SizedBox(height: 30),
+                    ChangeNotifierProvider.value(
+                      value: parentProvider,
+                      child: _LoginForm(
+                          sharedProvider: sharedProvider,
+                          parentProvider: parentProvider),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 20),
-                _IngresarButton(loginForm: loginForm),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(height: 50),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _IngresarButton extends StatelessWidget {
-  const _IngresarButton({
-    Key? key,
-    required this.loginForm,
-  }) : super(key: key);
+class _LoginForm extends StatelessWidget {
+  final SharedProvider sharedProvider;
+  final ParentProvider parentProvider;
 
-  final LoginFormProvider loginForm;
+  _LoginForm({required this.sharedProvider, required this.parentProvider});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final double buttonWidth = constraints.maxWidth * 0.4;
+
+        return SizedBox(
+          child: Form(
+            key: formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              children: [
+                const SizedBox(height: 30),
+                TextFormField(
+                  autocorrect: false,
+                  obscureText: true,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecorations.authInputDecoration(
+                    hintText: 'ASG350',
+                    labelText: 'Codigo No Vidente',
+                    prefixIcon: Icons.lock,
+                  ),
+                  onChanged: (value) =>
+                      {parentProvider.currentParent.codeBlind = value},
+                  validator: (value) {
+                    return (value != null && value.length >= 6)
+                        ? null
+                        : 'El codigo debe tener 6 caracteres';
+                  },
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  children: [
+                    Expanded(
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        disabledColor: Colors.grey,
+                        elevation: 0,
+                        color: Colors.deepPurple,
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                              context, 'register_parent');
+                        },
+                        child: Container(
+                          width: buttonWidth,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15,
+                            horizontal: buttonWidth * 0.2,
+                          ),
+                          child: const Text(
+                            'Volver',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: _IngresarButton(
+                        sharedProvider: sharedProvider,
+                        width: buttonWidth,
+                        parentProvider: parentProvider,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _IngresarButton extends StatelessWidget {
+  final SharedProvider sharedProvider;
+  final ParentProvider parentProvider;
+  final double width;
+
+  const _IngresarButton(
+      {Key? key,
+      required this.sharedProvider,
+      required this.width,
+      required this.parentProvider})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -109,26 +153,34 @@ class _IngresarButton extends StatelessWidget {
       disabledColor: Colors.grey,
       elevation: 0,
       color: Colors.deepPurple,
-      onPressed: loginForm.isLoading
+      onPressed: sharedProvider.isLoading
           ? null
           : () async {
               FocusScope.of(context).unfocus();
-              if (!loginForm.isValidForm()) return;
+              if (!sharedProvider.isValidForm(formKey)) return;
 
-              loginForm.isLoading = true;
+              sharedProvider.isLoading = true;
 
-              Future.delayed(const Duration(seconds: 2));
+              await Future.delayed(const Duration(seconds: 2));
 
-              //TODO: validar el login con backend
-              loginForm.isLoading = false;
-
-              Navigator.pushReplacementNamed(context, 'homeparent');
+              // TODO: validar el login con backend
+              sharedProvider.isLoading = false;
+              parentProvider
+                  .updateParentCodeBlindByBlindCode(
+                      parentProvider.currentParent.codeBlind)
+                  .then((value) =>
+                      Navigator.pushReplacementNamed(context, 'homeparent'));
             },
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 80),
+        width: width,
+        padding: EdgeInsets.symmetric(
+          vertical: 15,
+          horizontal: width * 0.2,
+        ),
         child: const Text(
           'Ingresar',
           style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
         ),
       ),
     );
