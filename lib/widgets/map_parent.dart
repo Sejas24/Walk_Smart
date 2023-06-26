@@ -1,4 +1,3 @@
-import 'package:baston_inteligente_mejorada/providers/blind_provider.dart';
 import 'package:baston_inteligente_mejorada/providers/parent_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +10,6 @@ class MapParentScreen extends StatefulWidget {
 }
 
 class _MapParentScreen extends State<MapParentScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -20,10 +18,9 @@ class _MapParentScreen extends State<MapParentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mapa'),
-        centerTitle: true,
-      )
-    );
+        appBar: AppBar(
+      title: const Text('Mapa'),
+      centerTitle: true,
+    ));
   }
 }

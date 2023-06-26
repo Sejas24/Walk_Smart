@@ -77,6 +77,9 @@ class _AppState extends State<App> {
               sharedProvider: sharedProvider,
               parentProvider: parentProvider,
             ),
+        //Rutas Temporales
+        'perfilBlind': (context) =>
+            PerfilBlindScreen(blindProvider: blindProvider)
       },
       // scaffoldMessengerKey: NotificationService.messengerkey,
       theme: ThemeData.light().copyWith(

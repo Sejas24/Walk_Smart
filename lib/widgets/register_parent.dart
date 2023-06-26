@@ -70,7 +70,7 @@ class _LoginForm extends StatelessWidget {
   final ParentProvider parentProvider;
   final SharedProvider sharedProvider;
 
-  _LoginForm({required this.parentProvider, required this.sharedProvider});
+  const _LoginForm({required this.parentProvider, required this.sharedProvider});
 
   @override
   Widget build(BuildContext context) {

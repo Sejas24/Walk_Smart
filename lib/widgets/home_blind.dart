@@ -1,5 +1,3 @@
-import 'package:baston_inteligente_mejorada/model/blind_model.dart';
-import 'package:baston_inteligente_mejorada/providers/blind_provider.dart';
 import 'package:baston_inteligente_mejorada/providers/providers.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';

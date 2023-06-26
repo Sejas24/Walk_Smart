@@ -9,7 +9,7 @@ class MapBlindScreen extends StatefulWidget {
   _MapBlindScreen createState() => _MapBlindScreen();
 }
 
-class _MapBlindScreen extends State<MapBlindScreen> {
+ class _MapBlindScreen extends State<MapBlindScreen> {
   //late GoogleMapController mapController;
   //LocationData? currentLocation;
 
@@ -34,6 +34,7 @@ class _MapBlindScreen extends State<MapBlindScreen> {
       appBar: AppBar(
         title: const Text('Mapa'),
         centerTitle: true,
+        leading: const Icon(null),
       ),
       /*body: GoogleMap(
         initialCameraPosition: CameraPosition(

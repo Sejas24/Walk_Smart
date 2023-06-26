@@ -1,3 +1,4 @@
+import 'package:baston_inteligente_mejorada/model/parent_model.dart';
 import 'package:baston_inteligente_mejorada/providers/parent_provider.dart';
 import 'package:baston_inteligente_mejorada/widgets/map_parent.dart';
 import 'package:baston_inteligente_mejorada/widgets/perfil_parent.dart';
@@ -5,7 +6,6 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../providers/shared_provider.dart';
-import 'widgets.dart';
 
 const _kPages = <String, IconData>{'Perfil': Icons.person, 'mapa': Icons.map};
 
@@ -43,22 +43,57 @@ class _ConvexAppExampleState extends State<HomeParent> {
       initialIndex: 1,
       child: Scaffold(
         body: FutureBuilder(
-          future: parentProvider.getBlindByEmail(parentProvider.blind.email),
-          builder: (context, snapshot) {
-            return Column(
-              children: [
-                Expanded(
-                  child: TabBarView(
-                    children: [
-                      for (final page in pagesOptions)
-                        Center(
-                          child: page,
-                        ),
-                    ],
+          future: parentProvider.getParentByEmail(sharedProvider.email),
+          builder: (BuildContext context, AsyncSnapshot<Parent> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // El Future está en curso
+              return const CircularProgressIndicator();
+            } else if (snapshot.hasData) {
+              // El Future ha sido completado exitosamente
+              final parent = snapshot.data!;
+              parentProvider.currentParent = parent;
+
+              print('Nombre: ${parent.name}, Email: ${parent.email}');
+
+              return Column(
+                children: [
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        for (final page in pagesOptions)
+                          Center(
+                            child: page,
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            );
+                ],
+              );
+              // Hacer algo con el objeto Blind
+            } else if (snapshot.hasError) {
+              final error = snapshot.error;
+              // Redirigir a CodeRegisterParent
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                // Navigator.of(context).pushReplacement(
+                //   MaterialPageRoute(
+                //       builder: (_) => CodeRegisterParentScreen(
+                //             parentProvider: parentProvider,
+                //             sharedProvider: sharedProvider,
+                //           )),
+                // );
+
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  'code_register_parent',
+                  (route) => false,
+                );
+              });
+              // Mostrar el mensaje de error
+              return Text('Error: $error');
+            } else {
+              // El Future está en un estado indefinido
+              return const Text('Estado indefinido');
+            }
           },
         ),
         bottomNavigationBar: ConvexAppBar(

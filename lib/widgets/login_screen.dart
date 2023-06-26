@@ -1,14 +1,13 @@
-import 'package:baston_inteligente_mejorada/providers/parent_provider.dart';
 import 'package:baston_inteligente_mejorada/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:resize/resize.dart';
 
-import '../providers/notification_provider.dart';
 import '../providers/shared_provider.dart';
 import '../utils/decoration.dart';
 
+final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
 class LoginScreen extends StatelessWidget {
   final SharedProvider sharedProvider;
@@ -68,7 +67,6 @@ class _LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return Form(
       key: formKey,
@@ -163,8 +161,6 @@ class _IngresarButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Resize(
       builder: () {
-final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
         return MaterialButton(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

@@ -15,7 +15,7 @@ import 'code_user_baston.dart';
 class RegisterBlind extends StatelessWidget {
   final BlindProvider blindProvider;
   final SharedProvider sharedProvider;
-  RegisterBlind(
+  const RegisterBlind(
       {super.key, required this.blindProvider, required this.sharedProvider});
 
   @override
@@ -52,7 +52,7 @@ class RegisterBlind extends StatelessWidget {
                   overlayColor: MaterialStateProperty.all(
                     Colors.indigo.withOpacity(0.6),
                   ),
-                  shape: MaterialStateProperty.all(StadiumBorder()),
+                  shape: MaterialStateProperty.all(const StadiumBorder()),
                 ),
                 child: const Text(
                   '¿Ya tienes una cuenta?',
@@ -76,7 +76,7 @@ class _BlindRegisterForm extends StatelessWidget {
   final SharedProvider sharedProvider;
   final BlindProvider blindProvider;
 
-  _BlindRegisterForm(
+  const _BlindRegisterForm(
       {required this.sharedProvider, required this.blindProvider});
 
   @override
@@ -207,7 +207,7 @@ class _IngresarButton extends StatelessWidget {
   final SharedProvider sharedProvider;
   final BlindProvider blindProvider;
 
-  _IngresarButton(
+  const _IngresarButton(
       {Key? key, required this.sharedProvider, required this.blindProvider})
       : super(key: key);
 

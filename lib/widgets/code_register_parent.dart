@@ -7,13 +7,17 @@ import '../utils/decoration.dart';
 import 'card_container.dart';
 import 'type_register_background.dart';
 
-final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
 class CodeRegisterParentScreen extends StatelessWidget {
   final SharedProvider sharedProvider;
   final ParentProvider parentProvider;
-  const CodeRegisterParentScreen(
-      {super.key, required this.parentProvider, required this.sharedProvider});
+  final GlobalKey<FormState> formKey;
+
+  CodeRegisterParentScreen({
+    Key? key,
+    required this.parentProvider,
+    required this.sharedProvider,
+  })  : formKey = GlobalKey<FormState>(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +39,10 @@ class CodeRegisterParentScreen extends StatelessWidget {
                     ChangeNotifierProvider.value(
                       value: parentProvider,
                       child: _LoginForm(
-                          sharedProvider: sharedProvider,
-                          parentProvider: parentProvider),
+                        sharedProvider: sharedProvider,
+                        parentProvider: parentProvider,
+                        formKey: formKey,
+                      ),
                     ),
                   ],
                 ),
@@ -53,8 +59,13 @@ class CodeRegisterParentScreen extends StatelessWidget {
 class _LoginForm extends StatelessWidget {
   final SharedProvider sharedProvider;
   final ParentProvider parentProvider;
+  final GlobalKey<FormState> formKey;
 
-  _LoginForm({required this.sharedProvider, required this.parentProvider});
+  const _LoginForm({
+    required this.sharedProvider,
+    required this.parentProvider,
+    required this.formKey,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +109,11 @@ class _LoginForm extends StatelessWidget {
                         elevation: 0,
                         color: Colors.deepPurple,
                         onPressed: () {
-                          Navigator.pushReplacementNamed(
-                              context, 'register_parent');
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            'login',
+                            (route) => false,
+                          );
                         },
                         child: Container(
                           width: buttonWidth,
@@ -121,6 +135,7 @@ class _LoginForm extends StatelessWidget {
                         sharedProvider: sharedProvider,
                         width: buttonWidth,
                         parentProvider: parentProvider,
+                        formKey: formKey,
                       ),
                     ),
                   ],
@@ -138,12 +153,14 @@ class _IngresarButton extends StatelessWidget {
   final SharedProvider sharedProvider;
   final ParentProvider parentProvider;
   final double width;
+  final GlobalKey<FormState> formKey;
 
   const _IngresarButton(
       {Key? key,
       required this.sharedProvider,
       required this.width,
-      required this.parentProvider})
+      required this.parentProvider,
+      required this.formKey})
       : super(key: key);
 
   @override
@@ -168,8 +185,10 @@ class _IngresarButton extends StatelessWidget {
               parentProvider
                   .updateParentCodeBlindByBlindCode(
                       parentProvider.currentParent.codeBlind)
-                  .then((value) =>
-                      Navigator.pushReplacementNamed(context, 'homeparent'));
+                  .then((value) {
+                print("entroooooooooooooooooooooooo homeparent jiji");
+                Navigator.pushReplacementNamed(context, 'homeparent');
+              });
             },
       child: Container(
         width: width,

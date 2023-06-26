@@ -78,14 +78,15 @@ class ParentProvider extends ChangeNotifier {
   }
 
   Future<Blind> getBlindByEmail(String email) async {
-    try {
-      final snapshot =
-          await blindCollection.where('email', isEqualTo: email).limit(1).get();
-
-      if (snapshot.docs.isNotEmpty) {
-        final data = snapshot.docs.first.data() as Map<String, dynamic>;
+    await blindCollection
+        .where('email', isEqualTo: email)
+        .limit(1)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        final data = value.docs.first.data() as Map<String, dynamic>;
         return Blind(
-          documentId: snapshot.docs.first.id,
+          documentId: value.docs.first.id,
           name: data['name'] ?? '',
           lastName: data['lastName'] ?? '',
           email: data['email'] ?? '',
@@ -94,11 +95,10 @@ class ParentProvider extends ChangeNotifier {
           latitud: data['latitud'] ?? '',
         );
       }
+    });
 
-      throw Exception('No se encontró el Blind con el email especificado.');
-    } catch (e) {
-      throw Exception('Error al obtener el Blind desde Firebase: $e');
-    }
+    return Future.error(
+        Exception("No se encontró el Blind con el codeBlind especificado."));
   }
 
   Future<Blind> getBlindByCode(String codeBlind) async {
