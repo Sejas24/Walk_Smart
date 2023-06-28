@@ -186,7 +186,6 @@ class _IngresarButton extends StatelessWidget {
                   .updateParentCodeBlindByBlindCode(
                       parentProvider.currentParent.codeBlind)
                   .then((value) {
-                print("entroooooooooooooooooooooooo homeparent jiji");
                 Navigator.pushReplacementNamed(context, 'homeparent');
               });
             },

@@ -31,7 +31,6 @@ class AppState extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
 class App extends StatefulWidget {
   const App({super.key});
 
@@ -78,7 +77,7 @@ class _AppState extends State<App> {
               parentProvider: parentProvider,
             ),
       },
-      // scaffoldMessengerKey: NotificationService.messengerkey,
+      //scaffoldMessengerKey: NotificationService.messengerkey,
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: Colors.grey[350],
       ),

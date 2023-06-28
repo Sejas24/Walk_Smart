@@ -14,8 +14,8 @@ class Blind {
       required this.lastName,
       required this.email,
       required this.codeBlind,
-      this.altitud = "-1",
-      this.latitud = "-5"});
+      this.altitud = "-17.3719827",
+      this.latitud = "-66.1674597"});
 
   // Default constructor
   Blind.defaultBlind() {

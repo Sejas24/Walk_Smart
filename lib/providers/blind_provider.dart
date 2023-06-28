@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../model/blind_model.dart';
 
@@ -8,54 +10,6 @@ class BlindProvider extends ChangeNotifier {
   Blind currentBlind = Blind.defaultBlind();
   final CollectionReference blindCollection =
       FirebaseFirestore.instance.collection('blinds');
-
-  BlindProvider() {
-    declareVariables();
-  }
-
-  declareVariables() async {
-    //bool serviceEnabled;
-    /*LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-
-   /* final LocationOptions locationSettings = LocationOptions(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 100,
-    );*/
-    StreamSubscription<Position> positionStream =
-        Geolocator.getPositionStream()
-            .listen((Position? position) {
-      currentBlind.altitud = position!.latitude.toString();
-      currentBlind.latitud = position.longitude.toString();
-    });*/
-
-    currentBlind.name = '';
-    currentBlind.lastName = '';
-    currentBlind.codeBlind = '';
-    //currentBlind.altitud = position.longitude.toString();
-    //currentBlind.latitud = position.latitude.toString();
-    notifyListeners();
-  }
 
   Future<void> postNewBlindUser(Blind blind) async {
     try {
@@ -131,6 +85,50 @@ class BlindProvider extends ChangeNotifier {
       Navigator.pushReplacementNamed(context, 'login');
     } catch (e) {
       print('Error al cerrar sesión: $e');
+      // Manejar el error según sea necesario
+    }
+  }
+
+  //Google Maps
+
+  Future<LatLng> getBlindLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw Exception('Location services are disabled');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw Exception('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      throw Exception(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    return LatLng(position.latitude, position.longitude);
+  }
+
+  Future<void> getBlindPosition() async {
+    try {
+      LatLng currentLocation = await getBlindLocation();
+
+      currentBlind.altitud = currentLocation.longitude.toString();
+      currentBlind.latitud = currentLocation.latitude.toString();
+
+      notifyListeners();
+    } catch (e) {
+      print('Error al obtener la ubicación: $e');
       // Manejar el error según sea necesario
     }
   }

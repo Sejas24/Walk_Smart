@@ -55,9 +55,6 @@ class _ConvexAppExampleState extends State<HomeParent> {
               // El Future ha sido completado exitosamente
               final parent = snapshot.data!;
               parentProvider.currentParent = parent;
-
-              print('Nombre: ${parent.name}, Email: ${parent.email}');
-
               return Column(
                 children: [
                   Expanded(
