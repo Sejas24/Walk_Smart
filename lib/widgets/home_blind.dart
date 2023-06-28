@@ -33,6 +33,7 @@ class _HomeBlindState extends State<HomeBlind> {
     final pagesOptions = [
       PerfilBlindScreen(
         blindProvider: blindProvider,
+        sharedProvider: sharedProvider,
       ),
       MapBlindScreen(
         blindProvider: blindProvider,

@@ -9,7 +9,7 @@ class MapBlindScreen extends StatefulWidget {
   _MapBlindScreen createState() => _MapBlindScreen();
 }
 
- class _MapBlindScreen extends State<MapBlindScreen> {
+class _MapBlindScreen extends State<MapBlindScreen> {
   //late GoogleMapController mapController;
   //LocationData? currentLocation;
 

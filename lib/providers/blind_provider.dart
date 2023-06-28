@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../model/blind_model.dart';
@@ -53,9 +54,6 @@ class BlindProvider extends ChangeNotifier {
     currentBlind.codeBlind = '';
     //currentBlind.altitud = position.longitude.toString();
     //currentBlind.latitud = position.latitude.toString();
-
-    //print(currentBlind.altitud);
-    //print(currentBlind.latitud);
     notifyListeners();
   }
 
@@ -95,6 +93,45 @@ class BlindProvider extends ChangeNotifier {
       throw Exception('No se encontró el Blind con el email especificado.');
     } catch (e) {
       throw Exception('Error al obtener el Blind desde Firebase: $e');
+    }
+  }
+
+  Future<void> saveBlindProfileData(Blind blind, documentID) async {
+    final Map<String, dynamic> blindData = {
+      'name': blind.name,
+      'lastName': blind.lastName,
+      'codeBlind': blind.codeBlind,
+      'email': blind.email,
+    };
+    await blindCollection.doc(documentID).set(blindData);
+  }
+
+  Future<void> deleteBlindAccount(context, String documentID) async {
+    try {
+      final FirebaseAuth auth = FirebaseAuth.instance;
+
+      // Eliminar documento de Firestore
+      await blindCollection.doc(documentID).delete();
+
+      // Eliminar cuenta de autenticación
+      final User? user = auth.currentUser;
+      await user?.delete();
+
+      // Navegar a la pantalla de inicio de sesión después de eliminar la cuenta
+      Navigator.pushReplacementNamed(context, 'login');
+    } catch (e) {
+      print('Error al eliminar la cuenta: $e');
+      // Manejar el error según sea necesario
+    }
+  }
+
+  Future<void> logout(context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacementNamed(context, 'login');
+    } catch (e) {
+      print('Error al cerrar sesión: $e');
+      // Manejar el error según sea necesario
     }
   }
 }

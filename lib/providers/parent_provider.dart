@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../model/blind_model.dart';
@@ -56,7 +57,7 @@ class ParentProvider extends ChangeNotifier {
     currentParent.name = '';
     currentParent.lastName = '';
     currentParent.codeBlind = '';
-    currentParent.cellphone = 0;
+    currentParent.cellPhone = '';
 
     //print(currentParent.altitud);
     //print(currentParent.latitud);
@@ -70,7 +71,7 @@ class ParentProvider extends ChangeNotifier {
         'lastName': parent.lastName,
         'email': parent.email,
         'codeBlind': parent.codeBlind,
-        'cellphone': parent.cellphone
+        'cellphone': parent.cellPhone
       }).then((value) => {print("Parent has been posted")});
     } catch (e) {
       throw Exception('Error al agregar el nuevo usuario Blind: $e');
@@ -102,7 +103,6 @@ class ParentProvider extends ChangeNotifier {
   }
 
   Future<Blind> getBlindByCode(String codeBlind) async {
-    print("GET BLIND BY CODE" + codeBlind);
     try {
       final snapshot = await blindCollection
           .where('codeBlind', isEqualTo: codeBlind)
@@ -129,8 +129,6 @@ class ParentProvider extends ChangeNotifier {
   }
 
   Future<Parent> getParentByEmail(String email) async {
-    print("GET PARENT BY EMAIL" + email);
-
     try {
       final snapshot = await parentCollection
           .where('email', isEqualTo: email)
@@ -140,14 +138,13 @@ class ParentProvider extends ChangeNotifier {
       if (snapshot.docs.isNotEmpty) {
         final data = snapshot.docs.first.data() as Map<String, dynamic>;
 
-        print("GET PARENT BY EMAIL" + data.toString());
         return Parent(
             documentId: snapshot.docs.first.id,
             name: data['name'] ?? '',
             lastName: data['lastName'] ?? '',
             email: data['email'] ?? '',
             codeBlind: data['codeBlind'] ?? '',
-            cellphone: data['cellphone'] ?? '');
+            cellPhone: data['cellphone'] ?? '');
       }
 
       throw Exception('No se encontró el Parent con el email especificado.');
@@ -157,17 +154,14 @@ class ParentProvider extends ChangeNotifier {
   }
 
   Future<void> updateParentCodeBlindByBlindCode(String blindCode) async {
-    print("UPDATE parent" + blindCode);
     try {
       // Obtener el Blind por su codeBlind
       blind = await getBlindByCode(blindCode);
 
       // Si el Blind existe, buscar el Parent por su email
-      print("111111111" + currentParent.email);
       if (blind != null) {
         final parent = await getParentByEmail(currentParent.email);
 
-        print("222222222" + parent.documentId);
 
         // Actualizar el campo codeBlind del Parent
         if (parent != null) {
@@ -187,6 +181,45 @@ class ParentProvider extends ChangeNotifier {
       }
     } catch (e) {
       throw Exception('Error al actualizar el campo codeBlind del Parent: $e');
+    }
+  }
+   Future<void> saveParentProfileData(Parent parent, documentID) async {
+    final Map<String, dynamic> parentdData = {
+      'name': parent.name,
+      'lastName': parent.lastName,
+      'codeBlind': parent.codeBlind,
+      'email': parent.email,
+      'cellphone': parent.cellPhone
+    };
+    await parentCollection.doc(documentID).set(parentdData);
+  }
+
+  Future<void> deleteParentAccount(context, String documentID) async {
+    try {
+      final FirebaseAuth auth = FirebaseAuth.instance;
+
+      // Eliminar documento de Firestore
+      await parentCollection.doc(documentID).delete();
+
+      // Eliminar cuenta de autenticación
+      final User? user = auth.currentUser;
+      await user?.delete();
+
+      // Navegar a la pantalla de inicio de sesión después de eliminar la cuenta
+      Navigator.pushReplacementNamed(context, 'login');
+    } catch (e) {
+      print('Error al eliminar la cuenta: $e');
+      // Manejar el error según sea necesario
+    }
+  }
+
+  Future<void> logout(context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacementNamed(context, 'login');
+    } catch (e) {
+      print('Error al cerrar sesión: $e');
+      // Manejar el error según sea necesario
     }
   }
 }

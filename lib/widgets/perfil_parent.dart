@@ -1,14 +1,49 @@
+import 'package:baston_inteligente_mejorada/model/parent_model.dart';
 import 'package:baston_inteligente_mejorada/widgets/perfil_background.dart';
 import 'package:flutter/material.dart';
 
 import '../providers/parent_provider.dart';
+import '../providers/shared_provider.dart';
 
-class PerfilParentScreen extends StatelessWidget {
+class PerfilParentScreen extends StatefulWidget {
   final ParentProvider parentProvider;
-  const PerfilParentScreen({super.key, required this.parentProvider});
+  final SharedProvider sharedProvider;
+
+  const PerfilParentScreen(
+      {super.key, required this.parentProvider, required this.sharedProvider});
+
+  @override
+  State<PerfilParentScreen> createState() => _PerfilParentScreenState();
+}
+
+class _PerfilParentScreenState extends State<PerfilParentScreen> {
+  Parent? parent;
+
+  @override
+  void initState() {
+    super.initState();
+    loadParentData();
+  }
+
+  void loadParentData() {
+    widget.parentProvider
+        .getParentByEmail(widget.sharedProvider.email)
+        .then((Parent loadedParent) {
+      setState(() {
+        parent = loadedParent;
+      });
+    }).catchError((error) {
+      print('Error al cargar el usuario: $error');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final String name = parent?.name ?? '';
+    final String lastName = parent?.lastName ?? '';
+    final String cellPhone = parent?.cellPhone ?? '';
+    final String documentID = parent?.documentId ?? '';
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color.fromRGBO(63, 63, 156, 1),
@@ -16,8 +51,8 @@ class PerfilParentScreen extends StatelessWidget {
           centerTitle: true,
           leading: IconButton(
             icon: const Icon(Icons.logout_outlined),
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, 'login');
+            onPressed: () async {
+              await widget.parentProvider.logout(context);
             },
           ),
         ),
@@ -46,13 +81,15 @@ class PerfilParentScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    'nombre y apellido',
-                    style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+                    '$name $lastName',
+                    style: const TextStyle(
+                        color: Color.fromRGBO(255, 255, 255, 1)),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Email del perfil',
-                    style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+                    parent?.email ?? '',
+                    style: const TextStyle(
+                        color: Color.fromRGBO(255, 255, 255, 1)),
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
@@ -74,30 +111,39 @@ class PerfilParentScreen extends StatelessWidget {
                   const Divider(),
                   const SizedBox(height: 50),
                   TextField(
-                    decoration: InputDecoration(labelText: 'Nombre'),
-                    // onChanged: (value) => setState(() => name = value),
-                    //controller: TextEditingController(text: name),
+                    decoration: const InputDecoration(labelText: 'Nombre'),
+                    onChanged: (value) {
+                      parent?.name = value;
+                    },
+                    controller: TextEditingController(
+                        text: parent?.name = parent?.name ?? ''),
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    decoration: InputDecoration(labelText: 'Apellido'),
-                    // onChanged: (value) => setState(() => lastName = value),
-                    // controller: TextEditingController(text: lastName),
+                    decoration: const InputDecoration(labelText: 'Apellido'),
+                    onChanged: (value) {
+                      parent?.lastName = value;
+                    },
+                    controller: TextEditingController(
+                        text: parent?.lastName = parent?.lastName ?? ''),
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    decoration:
-                        InputDecoration(labelText: 'Código de identificación'),
+                    decoration: const InputDecoration(labelText: 'Email'),
                     enabled: false,
-                    //controller: TextEditingController(text: codeBlind),
+                    controller:
+                        TextEditingController(text: parent?.email ?? ''),
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    decoration: InputDecoration(labelText: 'Email'),
-                    enabled: false,
-                    //controller: TextEditingController(text: email),
+                    decoration: const InputDecoration(labelText: 'Cellphone'),
+                    onChanged: (value) {
+                      parent?.cellPhone = value;
+                    },
+                    controller: TextEditingController(text: cellPhone),
+                    keyboardType: TextInputType.phone,
                   ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -117,11 +163,15 @@ class PerfilParentScreen extends StatelessWidget {
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          await widget.parentProvider
+                              .saveParentProfileData(parent!, documentID);
+                          setState(() {});
+                        },
                       ),
                     ],
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -141,7 +191,32 @@ class PerfilParentScreen extends StatelessWidget {
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: const Text(
+                                        'Esta Seguro de eliminar la cuenta?'),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            return Navigator.pop(
+                                                context, false);
+                                          },
+                                          child: const Text(
+                                            'Cancelar',
+                                            style: TextStyle(color: Colors.red),
+                                          )),
+                                      TextButton(
+                                          onPressed: () async {
+                                            await widget.parentProvider
+                                                .deleteParentAccount(
+                                                    context, documentID);
+                                          },
+                                          child: const Text('Si, Estoy Seguro'))
+                                    ],
+                                  ));
+                        },
                       ),
                     ],
                   )

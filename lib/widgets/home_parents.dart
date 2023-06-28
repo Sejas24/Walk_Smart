@@ -34,7 +34,10 @@ class _ConvexAppExampleState extends State<HomeParent> {
   @override
   Widget build(BuildContext context) {
     final pagesOptions = [
-      PerfilParentScreen(parentProvider: parentProvider),
+      PerfilParentScreen(
+        parentProvider: parentProvider,
+        sharedProvider: sharedProvider,
+      ),
       MapParentScreen(parentProvider: parentProvider)
     ];
 

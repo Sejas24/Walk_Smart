@@ -105,7 +105,7 @@ class _LoginForm extends StatelessWidget {
                 labelText: 'Phone number',
                 prefixIcon: Icons.add_ic_call_outlined),
             onChanged: (value) =>
-                parentProvider.currentParent.cellphone = int.parse(value),
+                parentProvider.currentParent.cellPhone = value,
           ),
           const SizedBox(height: 30),
           TextFormField(
@@ -241,7 +241,7 @@ class _IngresarButton extends StatelessWidget {
                 email: sharedProvider.email,
                 codeBlind: parentProvider
                     .currentParent.codeBlind, //TODO MODIFICAR LUEGO
-                cellphone: parentProvider.currentParent.cellphone);
+                cellPhone: parentProvider.currentParent.cellPhone);
             
             parentProvider.postNewParentUser(parent).then((value) => Navigator.push(
               context,

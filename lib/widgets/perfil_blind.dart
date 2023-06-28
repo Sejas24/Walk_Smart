@@ -1,14 +1,47 @@
+import 'package:baston_inteligente_mejorada/model/blind_model.dart';
 import 'package:baston_inteligente_mejorada/widgets/perfil_background.dart';
 import 'package:flutter/material.dart';
 
 import 'package:baston_inteligente_mejorada/providers/providers.dart';
 
-class PerfilBlindScreen extends StatelessWidget {
+class PerfilBlindScreen extends StatefulWidget {
   final BlindProvider blindProvider;
-  const PerfilBlindScreen({super.key, required this.blindProvider});
+  final SharedProvider sharedProvider;
+
+  const PerfilBlindScreen(
+      {super.key, required this.blindProvider, required this.sharedProvider});
+
+  @override
+  State<PerfilBlindScreen> createState() => _PerfilBlindScreenState();
+}
+
+class _PerfilBlindScreenState extends State<PerfilBlindScreen> {
+  Blind? blind;
+
+  @override
+  void initState() {
+    super.initState();
+    loadBlindData();
+  }
+
+  void loadBlindData() {
+    widget.blindProvider
+        .getBlindByEmail(widget.sharedProvider.email)
+        .then((Blind loadedBlind) {
+      setState(() {
+        blind = loadedBlind;
+      });
+    }).catchError((error) {
+      print('Error al cargar el usuario: $error');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final String name = blind?.name ?? '';
+    final String lastName = blind?.lastName ?? '';
+    final String documentID = blind?.documentId ?? '';
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color.fromRGBO(63, 63, 156, 1),
@@ -16,8 +49,8 @@ class PerfilBlindScreen extends StatelessWidget {
           centerTitle: true,
           leading: IconButton(
             icon: const Icon(Icons.logout_outlined),
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, 'login');
+            onPressed: () async{
+              await widget.blindProvider.logout(context);
             },
           ),
         ),
@@ -46,13 +79,15 @@ class PerfilBlindScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    'nombre y apellido',
-                    style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+                    '$name $lastName',
+                    style: const TextStyle(
+                        color: Color.fromRGBO(255, 255, 255, 1)),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Email del perfil',
-                    style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+                    blind?.email ?? '',
+                    style: const TextStyle(
+                        color: Color.fromRGBO(255, 255, 255, 1)),
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
@@ -73,75 +108,123 @@ class PerfilBlindScreen extends StatelessWidget {
                   const SizedBox(height: 30),
                   const Divider(),
                   const SizedBox(height: 50),
-                  TextField(
-                    decoration: InputDecoration(labelText: 'Nombre'),
-                    // onChanged: (value) => setState(() => name = value),
-                    //controller: TextEditingController(text: name),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    decoration: InputDecoration(labelText: 'Apellido'),
-                    // onChanged: (value) => setState(() => lastName = value),
-                    // controller: TextEditingController(text: lastName),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    decoration:
-                        InputDecoration(labelText: 'Código de identificación'),
-                    enabled: false,
-                    //controller: TextEditingController(text: codeBlind),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    decoration: InputDecoration(labelText: 'Email'),
-                    enabled: false,
-                    //controller: TextEditingController(text: email),
-                  ),
-                  SizedBox(height: 50),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  Column(
                     children: [
-                      MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        disabledColor: Colors.grey,
-                        elevation: 0,
-                        color: Colors.deepPurple,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: MediaQuery.of(context).size.width * 0.04,
-                            horizontal: MediaQuery.of(context).size.width * 0.1,
-                          ),
-                          child: const Text(
-                            'Guardar',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        onPressed: () {},
+                      TextField(
+                        decoration: const InputDecoration(labelText: 'Nombre'),
+                        onChanged: (value) {
+                          blind?.name = value;
+                        },
+                        controller: TextEditingController(
+                            text: blind?.name = blind?.name ?? ''),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 40),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        disabledColor: Colors.grey,
-                        elevation: 0,
-                        color: Colors.deepPurple,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: MediaQuery.of(context).size.width * 0.04,
-                            horizontal: MediaQuery.of(context).size.width * 0.1,
+                      const SizedBox(height: 20),
+                      TextField(
+                        decoration:
+                            const InputDecoration(labelText: 'Apellido'),
+                        onChanged: (value) {
+                          blind?.lastName = value;
+                        },
+                        controller: TextEditingController(
+                            text: blind?.lastName = blind?.lastName ?? ''),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        decoration: const InputDecoration(
+                            labelText: 'Código de identificación'),
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: blind?.codeBlind ?? ''),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        decoration: const InputDecoration(labelText: 'Email'),
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: blind?.email ?? ''),
+                      ),
+                      const SizedBox(height: 50),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          MaterialButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            disabledColor: Colors.grey,
+                            elevation: 0,
+                            color: Colors.deepPurple,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical:
+                                    MediaQuery.of(context).size.width * 0.04,
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.1,
+                              ),
+                              child: const Text(
+                                'Guardar',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            onPressed: () async {
+                              await widget.blindProvider
+                                  .saveBlindProfileData(blind!, documentID);
+                              setState(() {});
+                            },
                           ),
-                          child: const Text(
-                            'Borrar Cuenta',
-                            style: TextStyle(color: Colors.white),
+                        ],
+                      ),
+                      const SizedBox(height: 40),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          MaterialButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            disabledColor: Colors.grey,
+                            elevation: 0,
+                            color: Colors.deepPurple,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical:
+                                    MediaQuery.of(context).size.width * 0.04,
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.1,
+                              ),
+                              child: const Text(
+                                'Borrar Cuenta',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            onPressed: () async {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: const Text(
+                                            'Esta Seguro de eliminar la cuenta?'),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                return Navigator.pop(
+                                                    context, false);
+                                              },
+                                              child: const Text(
+                                                'Cancelar',
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              )),
+                                          TextButton(
+                                              onPressed: () async {
+                                                await widget.blindProvider
+                                                    .deleteBlindAccount(
+                                                        context, documentID);
+                                              },
+                                              child: const Text(
+                                                  'Si, Estoy Seguro'))
+                                        ],
+                                      ));
+                            },
                           ),
-                        ),
-                        onPressed: () {},
+                        ],
                       ),
                     ],
                   )
