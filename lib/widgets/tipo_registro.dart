@@ -1,13 +1,13 @@
-import 'package:baston_inteligente_mejorada/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-
+import 'package:baston_inteligente_mejorada/widgets/widgets.dart';
 import '../providers/shared_provider.dart';
 import 'login_screen.dart';
 
 class TipoRegistro extends StatelessWidget {
   final SharedProvider sharedProvider;
 
-  const TipoRegistro({super.key, required this.sharedProvider});
+  const TipoRegistro({Key? key, required this.sharedProvider})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +15,10 @@ class TipoRegistro extends StatelessWidget {
       body: Material(
         child: TypeRegisterBackground(
           child: Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: Align(
+            padding: const EdgeInsets.all(30.0),
+            child: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ButtonRegisterBlind(sharedProvider: sharedProvider),
                   ButtonRegisterParent(sharedProvider: sharedProvider),
@@ -35,7 +35,8 @@ class TipoRegistro extends StatelessWidget {
 class ButtonRegisterBlind extends StatelessWidget {
   final SharedProvider sharedProvider;
 
-  const ButtonRegisterBlind({super.key, required this.sharedProvider});
+  const ButtonRegisterBlind({Key? key, required this.sharedProvider})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,8 @@ class ButtonRegisterBlind extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => LoginScreen(sharedProvider: sharedProvider),
+                  builder: (context) =>
+                      LoginScreen(sharedProvider: sharedProvider),
                 ),
               );
               sharedProvider.isBlind = true;
@@ -59,8 +61,8 @@ class ButtonRegisterBlind extends StatelessWidget {
             },
             child: Image.asset(
               'assets/Persona_novidente.png',
-              height: 250,
-              width: 250,
+              height: 300, // Ajusta el tamaño de la imagen
+              width: 300, // Ajusta el tamaño de la imagen
               fit: BoxFit.cover,
             ),
           ),
@@ -82,7 +84,8 @@ class ButtonRegisterBlind extends StatelessWidget {
 class ButtonRegisterParent extends StatelessWidget {
   final SharedProvider sharedProvider;
 
-  const ButtonRegisterParent({super.key, required this.sharedProvider});
+  const ButtonRegisterParent({Key? key, required this.sharedProvider})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +101,8 @@ class ButtonRegisterParent extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => LoginScreen(sharedProvider: sharedProvider),
+                  builder: (context) =>
+                      LoginScreen(sharedProvider: sharedProvider),
                 ),
               );
               sharedProvider.isParent = true;
@@ -106,8 +110,8 @@ class ButtonRegisterParent extends StatelessWidget {
             },
             child: Image.asset(
               'assets/Persona_novidente_familiar.png',
-              height: 250,
-              width: 250,
+              height: 300, // Ajusta el tamaño de la imagen
+              width: 300, // Ajusta el tamaño de la imagen
               fit: BoxFit.cover,
             ),
           ),

@@ -20,7 +20,7 @@ class BlindProvider extends ChangeNotifier {
         'codeBlind': blind.codeBlind,
         'altitud': blind.altitud,
         'latitud': blind.latitud,
-      }).then((value) => {print("blind has been posted")});
+      }).then((value) => {debugPrint("blind has been posted")});
     } catch (e) {
       throw Exception('Error al agregar el nuevo usuario Blind: $e');
     }

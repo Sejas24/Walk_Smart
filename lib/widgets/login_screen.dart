@@ -67,7 +67,6 @@ class _LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Form(
       key: formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -200,8 +199,29 @@ class _IngresarButton extends StatelessWidget {
                   Navigator.pushReplacementNamed(context, 'homeparent');
                 }
               } catch (e) {
-                //TODO mostar error al usuario de contraseña o correo invalido
-                // NotificationProvided.showSnackbar(e.toString());
+                String errorMessage = 'Ocurrió un error al iniciar sesión.';
+                // Verificar el tipo de error y mostrar un mensaje adecuado al usuario
+                if (e is FirebaseAuthException) {
+                  switch (e.code) {
+                    case 'user-not-found':
+                      errorMessage = 'Usuario no encontrado.';
+                      break;
+                    case 'wrong-password':
+                      errorMessage = 'Contraseña incorrecta.';
+                      break;
+                    case 'invalid-email':
+                      errorMessage = 'Correo electrónico inválido.';
+                      break;
+                    default:
+                      errorMessage = 'Error: ${e.message}';
+                  }
+                }
+                // Mostrar el mensaje de error al usuario
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(errorMessage),
+                  ),
+                );
               }
             });
       },

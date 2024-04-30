@@ -5,7 +5,8 @@ import 'package:location/location.dart';
 
 class MapBlindScreen extends StatefulWidget {
   final BlindProvider blindProvider;
-  const MapBlindScreen({Key? key, required this.blindProvider}) : super(key: key);
+  const MapBlindScreen({Key? key, required this.blindProvider})
+      : super(key: key);
 
   @override
   _MapBlindScreenState createState() => _MapBlindScreenState();
