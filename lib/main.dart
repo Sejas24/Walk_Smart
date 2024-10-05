@@ -1,13 +1,13 @@
-import 'package:baston_inteligente_mejorada/providers/blind_provider.dart';
-import 'package:baston_inteligente_mejorada/providers/parent_provider.dart';
-import 'package:baston_inteligente_mejorada/providers/shared_provider.dart';
-import 'package:baston_inteligente_mejorada/widgets/code_register_parent.dart';
-import 'package:baston_inteligente_mejorada/widgets/login_screen.dart';
-import 'package:baston_inteligente_mejorada/widgets/register_parent.dart';
+import 'package:baston_inteligente_mejorada/services/blind_provider.dart';
+import 'package:baston_inteligente_mejorada/services/parent_provider.dart';
+import 'package:baston_inteligente_mejorada/services/shared_provider.dart';
+import 'package:baston_inteligente_mejorada/screens/code_register_parent.dart';
+import 'package:baston_inteligente_mejorada/screens/login_screen.dart';
+import 'package:baston_inteligente_mejorada/screens/register_parent.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/widgets.dart';
+import 'screens/screens.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';

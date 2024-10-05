@@ -1,0 +1,10 @@
+export 'package:baston_inteligente_mejorada/screens/register_blind.dart';
+export 'package:baston_inteligente_mejorada/screens/home_parents.dart';
+export 'package:baston_inteligente_mejorada/screens/home_blind.dart';
+export 'package:baston_inteligente_mejorada/screens/map_blind.dart';
+export 'package:baston_inteligente_mejorada/screens/perfil_blind.dart';
+export 'package:baston_inteligente_mejorada/screens/type_register_background.dart';
+export 'package:baston_inteligente_mejorada/screens/background_screens.dart';
+export 'package:baston_inteligente_mejorada/screens/tipo_registro.dart';
+export 'package:baston_inteligente_mejorada/screens/card_container.dart';
+export 'package:baston_inteligente_mejorada/screens/map_screen.dart';

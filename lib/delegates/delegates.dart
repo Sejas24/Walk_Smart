@@ -1,0 +1,1 @@
+export 'package:baston_inteligente_mejorada/delegates/search_destination_delegates.dart';
